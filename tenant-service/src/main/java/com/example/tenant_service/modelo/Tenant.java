@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
 @Entity
@@ -29,8 +30,9 @@ public class Tenant {
     private String apellido;
 
     @NotBlank(message = "El RUT es obligatorio")
+    @Pattern(regexp = "^[0-9]{7,8}-[0-9Kk]{1}$", message = "Formato de RUT inválido (ej: 12345678-9)")
     @Column(unique = true)
-    private String rut;
+    private String rut; 
 
     @Email(message = "Debe ingresar un formato de email válido")
     private String email;  
