@@ -45,7 +45,7 @@ public class Lease {
     private Double precioMensual;
 
     @NotNull(message = "El monto de garantía es obligatorio")
-    @Column(name = "monto_guarantia") // Ojo: en tu imagen dice 'monto_garantia' o 'monto_guarantia' según el árbol de la izq
+    @Column(name = "monto_garantia") 
     private Double montoGarantia;
 
     @NotBlank(message = "El estado del contrato es obligatorio")
