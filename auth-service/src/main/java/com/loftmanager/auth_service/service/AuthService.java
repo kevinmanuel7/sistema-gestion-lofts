@@ -18,6 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@SuppressWarnings("null") // Elimina las 6 advertencias de seguridad de nulos de VS Code
 public class AuthService {
 
     private final UsuarioRepository usuarioRepository;
@@ -33,12 +34,16 @@ public class AuthService {
         Rol rol = rolRepository.findById(request.getRol().getIdRol())
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado en la base de datos"));
         
-        request.setRol(rol);
-        // Encriptación de contraseña antes de persistir
-        request.setPassword(passwordEncoder.encode(request.getPassword()));
-        usuarioRepository.save(request);
-
-        String token = jwtService.generateToken(request);
+        Usuario usuario = new Usuario();
+        usuario.setUsername(request.getUsername());
+        usuario.setPassword(passwordEncoder.encode(request.getPassword()));
+        usuario.setNombreReal(request.getNombreReal());
+        usuario.setCargoUsuario(request.getCargoUsuario());
+        usuario.setEmail(request.getEmail());
+        usuario.setRol(rol);
+        
+        Usuario usuarioGuardado = usuarioRepository.save(usuario);
+        String token = jwtService.generateToken(usuarioGuardado);
         return AuthResponse.builder().token(token).build();
     }
 
@@ -46,16 +51,14 @@ public class AuthService {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
-
-        Usuario user = usuarioRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + request.getUsername()));
-
-        String token = jwtService.generateToken(user);
+        Usuario usuario = usuarioRepository.findByUsername(request.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+        String token = jwtService.generateToken(usuario);
         return AuthResponse.builder().token(token).build();
     }
 
-    // --- FLUJO CRUD (GESTOR DE USUARIOS) ---
-
+    // --- CRUD DE USUARIOS ---
+    
     public List<Usuario> getAllUsers() {
         return usuarioRepository.findAll();
     }

@@ -12,7 +12,8 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    private final String SECRET_KEY = "NDAxZGY3ZjkzZGE1N2ZkM2RjN2Y5ZTMwNWY0YzU0NDI2YzYwZTk5OTRkYTQ1MTA3M2VlMWI1MjNlZGNmYjZlNA==";
+    // Llave sincronizada con auth-service para validar firmas
+    private static final String SECRET_KEY = "NDI0NTY3ODlBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWjEyMzQ1Njc4OEE=";
 
     private Key getSigningKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);

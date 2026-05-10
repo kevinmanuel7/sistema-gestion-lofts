@@ -8,6 +8,11 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+// Nuevos imports para mapear tu entidad Usuario local
+import com.loftmanager.auth_service.model.Usuario;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import java.util.Collections;
+
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,15 +28,18 @@ public class JwtService {
     // Duración del token de acceso (24 horas en milisegundos)
     private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24;
 
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+    // --- NUEVO MÉTODO SOBRECARGADO ---
+    // Recibe tu entidad Usuario directamente, la traduce a UserDetails y genera el token
+    public String generateToken(Usuario usuario) {
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(
+            usuario.getUsername(),
+            usuario.getPassword(),
+            Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + usuario.getRol().getNombreRol()))
+        );
+        return generateToken(userDetails);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
-
+    // Método original que recibe UserDetails
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
@@ -45,6 +53,15 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
     }
 
     public boolean isTokenValid(String token, UserDetails userDetails) {
