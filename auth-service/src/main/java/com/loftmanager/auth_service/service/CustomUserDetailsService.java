@@ -22,11 +22,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // Buscamos el usuario en tu tabla 'usuarios'
         Usuario usuario = usuarioRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado con username: " + username));
 
-        // Retornamos un UserDetails mapeando el usuario y su rol de la base de datos
         return new User(
                 usuario.getUsername(),
                 usuario.getPassword(),

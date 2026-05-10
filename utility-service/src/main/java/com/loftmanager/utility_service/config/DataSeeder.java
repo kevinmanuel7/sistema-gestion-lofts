@@ -17,6 +17,7 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     @Override
+    @SuppressWarnings("null")
     public void run(String... args) throws Exception {
         if (lecturaRepository.count() == 0) {
             lecturaRepository.saveAll(List.of(

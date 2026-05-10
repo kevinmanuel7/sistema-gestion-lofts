@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-@SuppressWarnings("null") // Elimina las 6 advertencias de seguridad de nulos de VS Code
+@SuppressWarnings("null")
 public class AuthService {
 
     private final UsuarioRepository usuarioRepository;
@@ -27,10 +27,8 @@ public class AuthService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
-    // --- FLUJO DE AUTENTICACIÓN ---
 
     public AuthResponse register(Usuario request) {
-        // Buscamos el Rol existente en la BD para no crear duplicados
         Rol rol = rolRepository.findById(request.getRol().getIdRol())
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado en la base de datos"));
         
@@ -57,7 +55,6 @@ public class AuthService {
         return AuthResponse.builder().token(token).build();
     }
 
-    // --- CRUD DE USUARIOS ---
     
     public List<Usuario> getAllUsers() {
         return usuarioRepository.findAll();
@@ -74,14 +71,11 @@ public class AuthService {
             user.setCargoUsuario(userDetails.getCargoUsuario());
             user.setEmail(userDetails.getEmail());
 
-            // Si se envió un nuevo rol, actualizamos la relación JPA de manera segura
             if (userDetails.getRol() != null && userDetails.getRol().getIdRol() != null) {
                 Rol rol = rolRepository.findById(userDetails.getRol().getIdRol())
                         .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
                 user.setRol(rol);
             }
-
-            // Solo encriptamos y modificamos la contraseña si viene en el cuerpo
             if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
                 user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
             }

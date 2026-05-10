@@ -7,8 +7,6 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
-
-// Nuevos imports para mapear tu entidad Usuario local
 import com.loftmanager.auth_service.model.Usuario;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.Collections;
@@ -22,15 +20,11 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    // Clave secreta Base64 robusta y segura de 256 bits (HS256)
     private static final String SECRET_KEY = "NDI0NTY3ODlBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWjEyMzQ1Njc4OEE="; 
 
-    // Duración del token de acceso (24 horas en milisegundos)
     private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24;
 
-    // --- NUEVO MÉTODO SOBRECARGADO ---
-    // Recibe tu entidad Usuario directamente, la traduce a UserDetails y genera el token
-    public String generateToken(Usuario usuario) {
+     public String generateToken(Usuario usuario) {
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(
             usuario.getUsername(),
             usuario.getPassword(),
@@ -39,7 +33,6 @@ public class JwtService {
         return generateToken(userDetails);
     }
 
-    // Método original que recibe UserDetails
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }

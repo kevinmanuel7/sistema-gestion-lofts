@@ -17,25 +17,25 @@ public class AuthController {
 
     private final AuthService authService;
 
-    // POST: /api/auth/register (PÚBLICO)
+    //CREATE POST: /api/auth/register (PÚBLICO)
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody Usuario request) {
         return ResponseEntity.ok(authService.register(request));
     }
 
-    // POST: /api/auth/login (PÚBLICO)
+    //CREATE POST: /api/auth/login (PÚBLICO)
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         return ResponseEntity.ok(authService.login(request));
     }
 
-    // GET: /api/auth/users (REQUIERE TOKEN)
+    //LEER GET: /api/auth/users (REQUIERE TOKEN)
     @GetMapping("/users")
     public ResponseEntity<List<Usuario>> getAll() {
         return ResponseEntity.ok(authService.getAllUsers());
     }
 
-    // GET: /api/auth/users/{id} (REQUIERE TOKEN)
+    //LEER GET: /api/auth/users/{id} (REQUIERE TOKEN)
     @GetMapping("/users/{id}")
     public ResponseEntity<Usuario> getById(@PathVariable Long id) {
         return authService.getUserById(id)
@@ -43,7 +43,7 @@ public class AuthController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // PUT: /api/auth/users/{id} (REQUIERE TOKEN)
+    //ACTUALIZAR PUT: /api/auth/users/{id} (REQUIERE TOKEN)
     @PutMapping("/users/{id}")
     public ResponseEntity<Usuario> update(@PathVariable Long id, @RequestBody Usuario user) {
         return ResponseEntity.ok(authService.updateUser(id, user));

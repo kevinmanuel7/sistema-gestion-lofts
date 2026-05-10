@@ -7,6 +7,5 @@ import java.util.List;
 
 @Repository
 public interface LecturaRepository extends JpaRepository<Lectura, Long> {
-    // Método para buscar todas las lecturas de un loft específico
     List<Lectura> findByIdLoftFk(Long idLoftFk);
 }

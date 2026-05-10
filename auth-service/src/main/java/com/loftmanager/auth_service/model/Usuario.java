@@ -39,7 +39,6 @@ public class Usuario {
     @Column(nullable = false, length = 50)
     private String email;
 
-    //Conexión Many-to-one: muchos usuarios tienen un rol
     @ManyToOne
     @JoinColumn(name = "id_rol_fk", nullable = false)
     private Rol rol;

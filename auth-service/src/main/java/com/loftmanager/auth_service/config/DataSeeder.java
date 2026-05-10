@@ -16,6 +16,7 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     @Override
+    @SuppressWarnings("null")
     public void run(String... args) throws Exception {
         if (rolRepository.count() == 0) {
             Rol admin = new Rol(null, "ADMIN");
