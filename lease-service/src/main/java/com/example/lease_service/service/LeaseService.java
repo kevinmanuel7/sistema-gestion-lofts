@@ -14,15 +14,14 @@ import org.springframework.stereotype.Service;
 @Service
 public class LeaseService {
 
-    private final LeaseServiceApplication leaseServiceApplication;
-    @Autowired
-    public LeaseRepository leaseRepository;
+    private final LeaseRepository leaseRepository;
 
-    LeaseService(LeaseServiceApplication leaseServiceApplication) {
-        this.leaseServiceApplication = leaseServiceApplication;
+    public LeaseService(LeaseRepository leaseRepository) {
+    this.leaseRepository = leaseRepository;
+    
     }
 
-    //Obtener todo.
+    //Obtener todo
     public List<Lease> getAllLeases(){
         return leaseRepository.findAll();
     } 
@@ -61,7 +60,27 @@ public class LeaseService {
     if (leaseRepository.existsOverlap(nuevo.getLoftId(), nuevo.getFechaInicio(), fin)) {
         throw new IllegalStateException("El Loft ya está ocupado en esas fechas.");
     }
-    }   
+    }
+    
+    //Actualizar un contrato existente
+    public Lease updateLease(Long id, Lease leaseDetalles){
+        Lease leaseExistente = leaseRepository.findById(id)
+        .orElseThrow(() -> new IllegalStateException("ID no existe"));
+
+        //Validar consistencia de fechas
+        validarConsistenciasFechas(leaseDetalles);
+
+        //Actualizar
+        leaseExistente.setTenantId(leaseDetalles.getTenantId());
+        leaseExistente.setLoftId(leaseDetalles.getLoftId());
+        leaseExistente.setFechaInicio(leaseDetalles.getFechaInicio());
+        leaseExistente.setFechaTermino(leaseDetalles.getFechaTermino());
+        leaseExistente.setPrecioMensual(leaseDetalles.getPrecioMensual());
+        leaseExistente.setMontoGarantia(leaseDetalles.getMontoGarantia());
+        leaseExistente.setEstadoContrato(leaseDetalles.getEstadoContrato());
+
+        return leaseRepository.save(leaseExistente);
+    }
 
     // Eliminar un contrato
     public void deleteLease(Long id) {

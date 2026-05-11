@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,18 +23,23 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/leases")
 public class LeaseController {
     
-    @Autowired
-    private LeaseService leaseService;
+    private final LeaseService leaseService;
 
-    // Crear un nuevo contrato de arriendo.
-    @PostMapping
-    public ResponseEntity<Lease> createLease(@Valid @RequestBody Lease lease) {
-        
-        Lease nuevoLease = leaseService.saveLease(lease);
-        return new ResponseEntity<>(nuevoLease, HttpStatus.CREATED);
+    public LeaseController(LeaseService leaseService) {
+        this.leaseService = leaseService;
     }
 
-    // Obtener todos los contratos de arriendos.
+    // Crear un nuevo contrato de arriendo
+    @PostMapping
+    public ResponseEntity<?> createLease(@Valid @RequestBody Lease lease) {
+        try {
+            return new ResponseEntity<>(leaseService.saveLease(lease), HttpStatus.CREATED);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    //Obtener la lista completa de contratos registrados en db_leases
     @GetMapping
     public List<Lease> getAllLeases() {
         return leaseService.getAllLeases();
@@ -47,7 +53,18 @@ public class LeaseController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Eliminar un contrato
+    //Actualizar contrato existente.
+    //Vuelve  a validar la disponibilidad si se cambia fecha o loft. 
+    @PutMapping("/{id}")
+    public ResponseEntity<?> updateLease(@PathVariable Long id, @Valid @RequestBody Lease lease) {
+        try {
+            return ResponseEntity.ok(leaseService.updateLease(id, lease));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    //Eliminar un contrato del sistema por su ID.
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLease(@PathVariable Long id) {
         leaseService.deleteLease(id);

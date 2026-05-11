@@ -16,8 +16,10 @@ public interface LeaseRepository extends JpaRepository<Lease, Long> {
     
     List<Lease> findByTenantId(Long tenantId);
 
-    @Query("SELECT COUNT(l) > 0 FROM Lease l WHERE l.loft_id = :loftId AND " + "(l.fecha_fin IS NULL OR l.fecha_fin >= :inicio) AND (l.fecha_inicio <= :fin)")
+    
+    @Query("SELECT COUNT(l) > 0 FROM Lease l WHERE l.loftId = :loftId " +
+    "AND (l.fechaTermino >= :inicio AND l.fechaInicio <= :fin)")
     boolean existsOverlap(@Param("loftId") Long loftId, 
-                      @Param("inicio") LocalDate inicio, 
-                      @Param("fin") LocalDate fin);
+                   @Param("inicio") LocalDate inicio, 
+                   @Param("fin") LocalDate fin);
 }
