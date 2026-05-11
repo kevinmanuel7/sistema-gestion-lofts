@@ -7,9 +7,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 
@@ -23,10 +25,12 @@ public class Tenant {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "el nombre es obligatorio")
+    @NotBlank(message = "El nombre es obligatorio")
+    @Column(name = "nombre", nullable = false)
     private String nombre;
  
     @NotBlank(message = "El apellido es obligatorio")
+    @Column(name = "apellido", nullable = false)
     private String apellido;
 
     @NotBlank(message = "El RUT es obligatorio")
@@ -34,10 +38,22 @@ public class Tenant {
     @Column(unique = true)
     private String rut; 
 
-    @Email(message = "Debe ingresar un formato de email válido")
+    @NotBlank(message = "El email es obligatorio")
+    @Email(message = "Formato de email inválido")
+    @Column(name = "email", unique = true, nullable = false)
     private String email;  
-
+    
+    @Column(name = "telefono")
     private String telefono;
-
+  
+    //@NotNull(message = "La fecha de registro no puede ser nula")
+    @Column(name = "fecha_registro", nullable = false)
     private LocalDate fechaRegistro;
+
+    @PrePersist
+    protected void onCreate() {
+        if (this.fechaRegistro == null) {
+            this.fechaRegistro = LocalDate.now();
+        }
+    }
 }
