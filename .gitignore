@@ -1,0 +1,21 @@
+# === Compilación e Infraestructura Java ===
+**/target/
+*.class
+*.deploy
+*.jar
+*.war
+
+# === Archivos de Sistema Operativo (Mac/Windows) ===
+**/.DS_Store
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === Configuraciones de Editores (VS Code / IntelliJ) ===
+**/.vscode/
+**/.idea/
+*.iml
+*.iws
+.classpath
+.project
+.settings/
