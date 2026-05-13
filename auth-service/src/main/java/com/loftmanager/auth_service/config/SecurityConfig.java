@@ -20,11 +20,11 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable()) 
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                .requestMatchers("/api/auth/login", "/api/auth/register", "/error").permitAll()
                 .anyRequest().authenticated()
             )
             .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // Arquitectura REST Stateless
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             );
 
         return http.build();
