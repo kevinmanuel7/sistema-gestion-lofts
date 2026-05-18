@@ -15,6 +15,8 @@ import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 
 @Entity
 @Table(name = "Lease") 
@@ -33,6 +35,8 @@ public class Lease {
     private Long tenantId;
 
     @NotNull(message = "El ID del loft es obligatorio")
+    @Min(value = 1, message = "El número de loft no puede ser menor a 1")
+    @Max(value = 9, message = "El negocio solo cuenta con lofts del 1 al 9")
     @Column(name = "loft_id")
     private Long loftId;
 

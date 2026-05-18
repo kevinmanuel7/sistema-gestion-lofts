@@ -14,9 +14,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import lombok.Setter;
 
 @Entity
 @Data
+@Setter
 @Table(name = "tenants")
 
 public class Tenant {
@@ -49,6 +51,10 @@ public class Tenant {
     //@NotNull(message = "La fecha de registro no puede ser nula")
     @Column(name = "fecha_registro", nullable = false)
     private LocalDate fechaRegistro;
+
+    //Puente entre tenant y auth para lectura de utility-service
+    @Column(name = "id_usuario")
+    private Long idUsuario;
 
     @PrePersist
     protected void onCreate() {

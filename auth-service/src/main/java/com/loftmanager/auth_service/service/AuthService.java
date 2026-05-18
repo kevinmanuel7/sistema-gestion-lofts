@@ -29,9 +29,37 @@ public class AuthService {
 
 
     public AuthResponse register(Usuario request) {
+        // 1. Buscamos el rol en la base de datos para asegurar su existencia
         Rol rol = rolRepository.findById(request.getRol().getIdRol())
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado en la base de datos"));
         
+        // 🛡️ ADUANA EXCLUSIVA PARA CLIENTES (Rol ID 3)
+        // El colador de contratos y lofts solo se activa si se está registrando un Cliente
+        if (request.getRol().getIdRol() == 3) {
+            if (request.getIdLoft() == null) {
+                throw new IllegalArgumentException("Operación rechazada: Un usuario de tipo CLIENTE debe ingresar un número de Loft obligatoriamente.");
+            }
+
+            if (usuarioRepository.existsByIdLoft(request.getIdLoft())) {
+                throw new IllegalArgumentException("Operación rechazada: El Loft " + request.getIdLoft() + " ya tiene una cuenta de usuario CLIENTE activa vinculada en el sistema.");
+            }
+
+            org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
+            String urlValidacion = "http://localhost:8080/api/leases/validar-loft/" + request.getIdLoft();
+
+            try {
+                Boolean tieneContratoLegal = restTemplate.getForObject(urlValidacion, Boolean.class);
+                if (tieneContratoLegal == null || !tieneContratoLegal) {
+                    throw new IllegalArgumentException("Operación rechazada: El Loft " + request.getIdLoft() + " no registra ningún contrato de arriendo activo en el sistema.");
+                }
+            } catch (IllegalArgumentException e) {
+                throw e; 
+            } catch (Exception e) {
+                throw new RuntimeException("Error de consistencia distribuida: El lease-service no responde. Registro congelado por seguridad.");
+            }
+        }
+
+        // 🚀 Si es OPERADOR (Rol 2) o un nuevo ADMIN (Rol 1), se salta el colador de lofts y contratos, guardándose de inmediato
         Usuario usuario = new Usuario();
         usuario.setUsername(request.getUsername());
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -39,10 +67,12 @@ public class AuthService {
         usuario.setCargoUsuario(request.getCargoUsuario());
         usuario.setEmail(request.getEmail());
         usuario.setRol(rol);
+        usuario.setIdLoft(request.getIdLoft());
         
-        Usuario usuarioGuardado = usuarioRepository.save(usuario);
-        String token = jwtService.generateToken(usuarioGuardado);
-        return AuthResponse.builder().token(token).build();
+        usuarioRepository.save(usuario);
+        
+        String token = jwtService.generateToken(usuario);
+        return new AuthResponse(token, usuario.getIdUsuario()); 
     }
 
     public AuthResponse login(LoginRequest request) {

@@ -52,4 +52,33 @@ public class JwtUtil {
             return false;
         }
     }
+
+    
+    public String extractRole(String token) {
+            // 1. Decodificamos la clave secreta Base64 compartida del sistema de forma nativa
+        byte[] keyBytes = io.jsonwebtoken.io.Decoders.BASE64.decode("NDI0NTY3ODlBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWjEyMzQ1Njc4OEE=");
+        java.security.Key signingKey = io.jsonwebtoken.security.Keys.hmacShaKeyFor(keyBytes);
+
+            // 2. Construimos el parser usando esa llave decodificada directamente
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(signingKey) 
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+            
+        return claims.get("rol", String.class); // Extrae el texto "ADMIN", "OPERADOR", etc.
+    }
+
+    public Long extractIdLoft(String token) {
+        byte[] keyBytes = io.jsonwebtoken.io.Decoders.BASE64.decode("NDI0NTY3ODlBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWjEyMzQ1Njc4OEE=");
+        java.security.Key signingKey = io.jsonwebtoken.security.Keys.hmacShaKeyFor(keyBytes);
+
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(signingKey) 
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+                
+        return claims.get("idLoft", Long.class); // Retorna el número de loft (ej: 1)
+    }
 }

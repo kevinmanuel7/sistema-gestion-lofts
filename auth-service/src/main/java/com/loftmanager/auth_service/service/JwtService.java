@@ -24,13 +24,24 @@ public class JwtService {
 
     private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24;
 
-     public String generateToken(Usuario usuario) {
+    // MODIFICADO: Ahora este método pobla los extraClaims con el rol de la BD
+    public String generateToken(Usuario usuario) {
+        Map<String, Object> extraClaims = new HashMap<>();
+        
+        // Sincronizado con el utility-service: Pasamos el rol limpio (ADMIN, OPERADOR, CLIENTE)
+        extraClaims.put("rol", usuario.getRol().getNombreRol()); 
+        if (usuario.getIdLoft() != null) {
+            extraClaims.put("idLoft", usuario.getIdLoft());
+        }
+
         UserDetails userDetails = new org.springframework.security.core.userdetails.User(
             usuario.getUsername(),
             usuario.getPassword(),
             Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + usuario.getRol().getNombreRol()))
         );
-        return generateToken(userDetails);
+        
+        // Llamamos al método constructor pasándole los claims cargados con el rol
+        return generateToken(extraClaims, userDetails);
     }
 
     public String generateToken(UserDetails userDetails) {

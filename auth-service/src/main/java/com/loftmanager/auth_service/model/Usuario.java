@@ -43,4 +43,7 @@ public class Usuario {
     @JoinColumn(name = "id_rol_fk", nullable = false)
     private Rol rol;
 
+    @Column(name = "id_loft_fk", nullable = true)
+    private Long idLoft;
+
 }

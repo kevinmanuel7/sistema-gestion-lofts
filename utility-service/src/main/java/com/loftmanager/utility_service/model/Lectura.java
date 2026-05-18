@@ -14,11 +14,17 @@ public class Lectura {
     private Long idLectura;
 
     @Column(nullable = false)
-    private Double valorKwh;
+    private Double lecturaMedidor;
+
+    @Column(nullable = false)
+    private Double consumoPeriodoKwh;
+
+    @Column(nullable = false)
+    private Double montoCobro;
 
     @Column(nullable = false)
     private LocalDateTime fechaLectura;
 
     @Column(nullable = false)
-    private Long idLoftFk; 
+    private Long idLoftFk;
 }
