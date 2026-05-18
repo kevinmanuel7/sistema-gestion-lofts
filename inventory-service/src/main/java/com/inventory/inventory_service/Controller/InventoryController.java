@@ -3,7 +3,6 @@ package com.inventory.inventory_service.Controller;
 
 import java.util.List;
 
-import org.hibernate.service.spi.InjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.inventory.inventory_service.Model.Inventory;
-import com.inventory.inventory_service.Repository.InventoryRepository;
 import com.inventory.inventory_service.Service.InventoryService;
 
 import jakarta.validation.Valid;
@@ -29,6 +27,12 @@ public class InventoryController {
 
     @Autowired
     private InventoryService inventoryService;
+
+    @GetMapping("/by-loft/{id_loft}")
+    public ResponseEntity<List<Inventory>> obtenerMueblesPorLoft(@PathVariable("id_loft") Long id_loft) {
+        List<Inventory> muebles = inventoryService.buscarPorLoft(id_loft);
+        return ResponseEntity.ok(muebles); 
+    }
 
     @GetMapping("/listar")
     public List<Inventory> listar() {

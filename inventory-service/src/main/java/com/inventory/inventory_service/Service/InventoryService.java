@@ -13,6 +13,10 @@ public class InventoryService {
     @Autowired
     private InventoryRepository inventoryRepository;
 
+    public List<Inventory> buscarPorLoft(Long id_loft) {
+        return inventoryRepository.findById_loft(id_loft);
+    }
+
     public List<Inventory> listarTodos() {
         return inventoryRepository.findAll();
     }
