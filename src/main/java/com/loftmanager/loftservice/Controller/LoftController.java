@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.loftmanager.loftservice.Clients.InventoryClient;
+import com.loftmanager.loftservice.Dtos.InventoryDto;
 import com.loftmanager.loftservice.Model.LoftModel;
 import com.loftmanager.loftservice.Repository.LoftRepository;
 
@@ -25,6 +27,18 @@ public class LoftController {
     @Autowired
     private LoftRepository loftRepository;
 
+    @Autowired
+    private InventoryClient inventoryClient;
+
+    @GetMapping("/{idLoft}/muebles")
+public ResponseEntity<?> listarMueblesPorloft(@PathVariable("idLoft") Long idLoft) { 
+    // Ahora "idLoft" coincide en ambos lados
+    if (!loftRepository.existsById(idLoft)) {
+        return new ResponseEntity<>("El loft con ID " + idLoft + " no existe.", HttpStatus.NOT_FOUND);
+    }
+    List<InventoryDto> muebles = inventoryClient.getItemsByLoftId(idLoft);
+    return ResponseEntity.ok(muebles);
+}
     @GetMapping("/listar")
     public List<LoftModel> listar() {
         return loftRepository.findAll();
