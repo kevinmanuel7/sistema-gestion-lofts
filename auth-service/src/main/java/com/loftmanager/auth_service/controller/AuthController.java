@@ -18,7 +18,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    // 🛡️ MÉTODOS AUXILIARES DE CONTROL DE ACCESO (Programación Defensiva)
+    //MÉTODOS AUXILIARES DE CONTROL DE ACCESO (Programación Defensiva)
     private boolean esAdminOOperador(Authentication authentication) {
         if (authentication == null) return false;
         return authentication.getAuthorities().stream()
@@ -32,14 +32,12 @@ public class AuthController {
                 .anyMatch(r -> r.getAuthority().equalsIgnoreCase("ROLE_ADMIN") || r.getAuthority().equalsIgnoreCase("ADMIN"));
     }
 
-    //CREATE POST: /api/auth/register (PÚBLICO)
-    // Reemplaza el método register en tu AuthController.java por este:
+    // CREATE POST (PRIVADO)
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody Usuario request) {
         try {
             return ResponseEntity.ok(authService.register(request));
         } catch (IllegalArgumentException e) {
-            // Captura los rechazos de los coladores y los transforma en un HTTP 400 controlado
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             // Captura caídas de servidores o errores imprevistos

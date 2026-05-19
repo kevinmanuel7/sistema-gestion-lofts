@@ -2,7 +2,6 @@ package com.example.lease_service.model;
 
 import java.time.LocalDate;
 
-import io.micrometer.common.lang.NonNull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

@@ -26,7 +26,7 @@ public class DataSeeder implements CommandLineRunner {
     @SuppressWarnings("null")
     public void run(String... args) throws Exception {
         
-        // 1. Crear los Roles únicamente si la tabla está vacía
+        //Crear los Roles únicamente si la tabla está vacía
         if (rolRepository.count() == 0) {
             Rol admin = new Rol(null, "ADMIN");
             Rol operador = new Rol(null, "OPERADOR");
@@ -36,7 +36,6 @@ public class DataSeeder implements CommandLineRunner {
             System.out.println("--> Roles iniciales creados exitosamente.");
         }
 
-        // 2. Búsqueda posicional de los objetos de Roles por texto
         List<Rol> todosLosRoles = rolRepository.findAll();
         
         Rol adminRol = todosLosRoles.stream()
@@ -44,7 +43,6 @@ public class DataSeeder implements CommandLineRunner {
                 .findFirst()
                 .orElseGet(() -> rolRepository.save(new Rol(null, "ADMIN")));
 
-        // 3. 🛡️ CORRECCIÓN CRÍTICA: Buscamos si existe la cuenta por su username real
         if (!usuarioRepository.findByUsername("admin_kevin").isPresent()) {
             Usuario adminMaestro = new Usuario();
             adminMaestro.setUsername("admin_kevin");

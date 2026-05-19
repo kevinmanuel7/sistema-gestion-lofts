@@ -23,6 +23,5 @@ public interface LeaseRepository extends JpaRepository<Lease, Long> {
                    @Param("inicio") LocalDate inicio, 
                    @Param("fin") LocalDate fin);
 
-    // Añade esta línea dentro de tu interfaz LeaseRepository
     boolean existsByLoftIdAndEstadoContratoIgnoreCase(Long loftId, String estadoContrato);
 }

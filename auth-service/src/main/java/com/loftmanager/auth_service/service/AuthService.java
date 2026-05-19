@@ -33,8 +33,8 @@ public class AuthService {
         Rol rol = rolRepository.findById(request.getRol().getIdRol())
                 .orElseThrow(() -> new RuntimeException("Rol no encontrado en la base de datos"));
         
-        // 🛡️ ADUANA EXCLUSIVA PARA CLIENTES (Rol ID 3)
-        // El colador de contratos y lofts solo se activa si se está registrando un Cliente
+        //ADUANA EXCLUSIVA PARA CLIENTES (Rol ID 3)
+        //La validación de contratos y lofts solo se activa si se está registrando un Cliente
         if (request.getRol().getIdRol() == 3) {
             if (request.getIdLoft() == null) {
                 throw new IllegalArgumentException("Operación rechazada: Un usuario de tipo CLIENTE debe ingresar un número de Loft obligatoriamente.");
@@ -59,7 +59,7 @@ public class AuthService {
             }
         }
 
-        // 🚀 Si es OPERADOR (Rol 2) o un nuevo ADMIN (Rol 1), se salta el colador de lofts y contratos, guardándose de inmediato
+        //Si es OPERADOR (Rol 2) o un nuevo ADMIN (Rol 1), se salta la validación de lofts y contratos, guardándose de inmediato
         Usuario usuario = new Usuario();
         usuario.setUsername(request.getUsername());
         usuario.setPassword(passwordEncoder.encode(request.getPassword()));

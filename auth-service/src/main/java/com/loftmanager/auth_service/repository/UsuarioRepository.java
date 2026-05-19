@@ -10,7 +10,6 @@ import java.util.Optional;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 
-    // Forzamos el query de forma manual para saltarnos el bug de parseo de Spring Data
     @Query("SELECT COUNT(u) > 0 FROM Usuario u WHERE u.idLoft = :idLoft")
     boolean existsByIdLoft(@Param("idLoft") Long idLoft);
 

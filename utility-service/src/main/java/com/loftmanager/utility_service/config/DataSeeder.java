@@ -32,7 +32,7 @@ public class DataSeeder implements CommandLineRunner {
                 lecturaAbril.setLecturaMedidor(lecturaBaseAbril); 
                 lecturaAbril.setConsumoPeriodoKwh(0.0); // Es la lectura inicial de configuración
                 lecturaAbril.setMontoCobro(0.0);
-                lecturaAbril.setFechaLectura(LocalDateTime.now().minusDays(30)); // Hace 30 días (Abril)
+                lecturaAbril.setFechaLectura(LocalDateTime.now().minusDays(30)); // Hace 30 días
                 lecturaAbril.setIdLoftFk(i); // El ID va cambiando del 1 al 9 gracias al bucle
 
                 lecturaRepository.save(lecturaAbril);

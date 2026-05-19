@@ -24,7 +24,6 @@ public class JwtService {
 
     private static final long EXPIRATION_TIME = 1000 * 60 * 60 * 24;
 
-    // MODIFICADO: Ahora este método pobla los extraClaims con el rol de la BD
     public String generateToken(Usuario usuario) {
         Map<String, Object> extraClaims = new HashMap<>();
         

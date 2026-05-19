@@ -18,7 +18,6 @@ public class LeaseController {
         this.leaseService = leaseService;
     }
 
-    // 🛡️ ENDPOINT EXCLUSIVO PARA EL COLADOR (Consistencia inter-servicios)
     // El auth-service llamará aquí para saber si el loft está arrendado legalmente
     @GetMapping("/validar-loft/{loftId}")
     public ResponseEntity<Boolean> validarLoftActivo(@PathVariable Long loftId) {
@@ -26,11 +25,11 @@ public class LeaseController {
         return ResponseEntity.ok(estaArrendado);
     }
 
-    // Crear un nuevo contrato de arriendo
+    //POST Crear un nuevo contrato de arriendo
     @PostMapping
     public ResponseEntity<?> createLease(@Valid @RequestBody Lease lease) {
         try {
-            // 🛡️ EL COLADOR: Consultamos al tenant-service a través del Gateway si el inquilino realmente existe
+            //Consultamos al tenant-service a través del Gateway si el inquilino realmente existe
             org.springframework.web.client.RestTemplate restTemplate = new org.springframework.web.client.RestTemplate();
             String urlValidarTenant = "http://localhost:8080/api/tenants/" + lease.getTenantId();
             
@@ -52,13 +51,13 @@ public class LeaseController {
         }
     }
 
-    // Obtener la lista completa de contratos registrados en db_leases
+    //GET Obtener la lista completa de contratos registrados en db_leases
     @GetMapping
     public List<Lease> getAllLeases() {
         return leaseService.getAllLeases();
     }
 
-    // Obtener un contrato de arriendo por ID
+    //GET Obtener un contrato de arriendo por ID
     @GetMapping("/{id}")
     public ResponseEntity<Lease> getLeaseById(@PathVariable Long id) {
         return leaseService.getLeaseById(id)
@@ -66,7 +65,7 @@ public class LeaseController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    // Actualizar contrato existente
+    //PUT Actualizar contrato existente
     @PutMapping("/{id}")
     public ResponseEntity<?> updateLease(@PathVariable Long id, @Valid @RequestBody Lease lease) {
         try {
@@ -76,7 +75,7 @@ public class LeaseController {
         }
     }
 
-    // Eliminar un contrato del sistema por su ID
+    //DELETE Eliminar un contrato del sistema por su ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLease(@PathVariable Long id) {
         leaseService.deleteLease(id);

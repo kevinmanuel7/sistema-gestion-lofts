@@ -1,4 +1,4 @@
-package com.loftmanager.auth_service.config; // Asegúrate de que coincida con tu estructura
+package com.loftmanager.auth_service.config;
 
 import com.loftmanager.auth_service.service.JwtService;
 import jakarta.servlet.FilterChain;
