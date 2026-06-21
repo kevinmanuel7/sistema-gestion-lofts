@@ -1,0 +1,37 @@
+
+services:
+  # 1. EL CONTENEDOR DE LA BASE DE DATOS
+  mysql-loft:
+    image: mysql:8.0
+    container_name: db_loft_container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_loft # Docker crea el esquema vacío automáticamente
+    ports:
+      - "3308:3306" # Lo exponemos en el 3308 para que no choque con Laragon (3306) ni con el auth-service (3307)
+    volumes:
+      - loft_db_data:/var/lib/mysql # Guarda los datos para que no se borren si apagas Docker
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # 2. EL CONTENEDOR DE TU MICROSERVICIO
+  loft-service:
+    build: . # Le dice a Docker que construya la imagen usando el Dockerfile de esta carpeta
+    container_name: loft_service_container
+    ports:
+      - "8083:8083"
+    depends_on:
+      mysql-loft:
+        condition: service_healthy # Obliga a esperar que MySQL encienda primero
+    restart: on-failure
+    environment:
+      # Sobrescribimos las variables de tu application.properties
+      - spring.datasource.url=jdbc:mysql://mysql-loft:3306/db_loft?serverTimezone=UTC
+      - spring.datasource.username=root
+      - spring.datasource.password=root
+
+volumes:
+  loft_db_data:

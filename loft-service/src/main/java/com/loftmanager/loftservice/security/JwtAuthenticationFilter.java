@@ -31,6 +31,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         System.out.println("👉 [RADAR] Petición recibida a la URL: " + request.getRequestURI());
 
+        // --- 🟢 NUEVO BLOQUE: Dejar pasar a Swagger libremente ---
+        String path = request.getRequestURI();
+        if (path.contains("/swagger-ui") || path.contains("/v3/api-docs")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -40,7 +47,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         final String jwt = authHeader.substring(7);
-        System.out.println("Token capturado. Intentando validar firma...");
 
         try {
             if (jwtUtil.isTokenValid(jwt)) {
