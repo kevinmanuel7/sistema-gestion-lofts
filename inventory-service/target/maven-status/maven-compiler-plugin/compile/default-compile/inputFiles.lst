@@ -1,0 +1,9 @@
+/Users/bastianveascontreras/Desktop/sistema-gestion-lofts-develop/inventory-service/src/main/java/com/inventory/inventory_service/InventoryServiceApplication.java
+/Users/bastianveascontreras/Desktop/sistema-gestion-lofts-develop/inventory-service/src/main/java/com/inventory/inventory_service/config/RestTemplateConfig.java
+/Users/bastianveascontreras/Desktop/sistema-gestion-lofts-develop/inventory-service/src/main/java/com/inventory/inventory_service/controller/InventoryController.java
+/Users/bastianveascontreras/Desktop/sistema-gestion-lofts-develop/inventory-service/src/main/java/com/inventory/inventory_service/model/Inventory.java
+/Users/bastianveascontreras/Desktop/sistema-gestion-lofts-develop/inventory-service/src/main/java/com/inventory/inventory_service/repository/InventoryRepository.java
+/Users/bastianveascontreras/Desktop/sistema-gestion-lofts-develop/inventory-service/src/main/java/com/inventory/inventory_service/security/JwtAuthenticationFilter.java
+/Users/bastianveascontreras/Desktop/sistema-gestion-lofts-develop/inventory-service/src/main/java/com/inventory/inventory_service/security/JwtUtil.java
+/Users/bastianveascontreras/Desktop/sistema-gestion-lofts-develop/inventory-service/src/main/java/com/inventory/inventory_service/security/SecurityConfig.java
+/Users/bastianveascontreras/Desktop/sistema-gestion-lofts-develop/inventory-service/src/main/java/com/inventory/inventory_service/service/InventoryService.java
