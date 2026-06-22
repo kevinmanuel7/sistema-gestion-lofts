@@ -12,23 +12,31 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final SwaggerBypassFilter swaggerBypassFilter;
     private final JwtAuthenticationFilter jwtAuthFilter;
 
-    public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter) {
+    public SecurityConfig(JwtAuthenticationFilter jwtAuthFilter, SwaggerBypassFilter swaggerBypassFilter) {
         this.jwtAuthFilter = jwtAuthFilter;
+        this.swaggerBypassFilter = swaggerBypassFilter;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/utility/status", "/error").permitAll()
-                .anyRequest().authenticated()
-            )
-            .sessionManagement(session -> session
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
+            .authorizeHttpRequests(auth -> {
+                // Rutas públicas SIEMPRE permitidas
+                auth.requestMatchers("/api/utility/status", "/error").permitAll();
+                // Swagger SIEMPRE permitido en desarrollo
+                auth.requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll();
+                
+                // Aquí está la magia: el resto de la seguridad se aplica
+                // pero si estamos en perfil "dev", permitimos todo para facilitar el testeo
+                auth.anyRequest().authenticated();
+            })
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+
+            .addFilterBefore(swaggerBypassFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
