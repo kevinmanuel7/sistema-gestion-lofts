@@ -1,0 +1,36 @@
+services:
+  lease-db:
+    image: mysql:8.0
+    container_name: lease-db-container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: lease_db 
+    ports:
+      - "3311:3306"
+    networks:
+      - loft_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  lease-app:
+    build: .
+    container_name: lease-service-container
+    ports:
+      - "8086:8086"
+    depends_on:
+      lease-db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://lease-db:3306/lease_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_ENABLED: "false" 
+    networks:
+      - loft_network
+
+networks:
+  loft_network:
+    external: true

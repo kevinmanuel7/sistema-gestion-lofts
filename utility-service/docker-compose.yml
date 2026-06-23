@@ -1,0 +1,45 @@
+
+services:
+  mysql-utility:
+    image: mysql:8.0
+    container_name: db_utility_container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_utility
+    ports:
+      - "3309:3306"
+    volumes:
+      - utility_db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - loft_network
+
+  utility-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: utility-service-container
+    ports:
+      - "8082:8082"
+    depends_on:
+      mysql-utility:
+        condition: service_healthy # Obliga a esperar que MySQL encienda primero
+    restart: on-failure
+    environment:
+      # Sobreescribirá application.properties automáticamente
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysql-utility:3306/db_utility?createDatabaseIfNotExist=true&serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=root
+    networks:
+      - loft_network
+
+volumes:
+  utility_db_data:
+
+networks:
+  loft_network:
+    external: true

@@ -22,18 +22,27 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
+                .requestMatchers(
+                    "/swagger-ui/**",
+                    "/v3/api-docs/**",
+                    "/swagger-ui/index.html"
+                ).permitAll()
                 // VER (GET) requiere estar autenticado (Cualquier rol)
-                .requestMatchers(HttpMethod.GET, "/api/loft", "/api/loft/**").authenticated()
+                //PARA SWAGGER CAMBIAMOS .authenticated() POR .permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/loft", "/api/loft/**").permitAll()
                 
                 // CREAR, EDITAR, BORRAR requiere rol ADMIN
-                .requestMatchers(HttpMethod.POST, "/apí/loft", "/api/loft/**").hasAuthority("ROLE_ADMIN")
+                //APAGADO TEMPORAL
+               /* .requestMatchers(HttpMethod.POST, "/api/loft", "/api/loft/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers(HttpMethod.PUT,"/api/loft", "/api/loft/**").hasAuthority("ROLE_ADMIN")
                 .requestMatchers(HttpMethod.DELETE,"/api/loft", "/api/loft/**").hasAuthority("ROLE_ADMIN")
-                
-                .anyRequest().authenticated()
+                */
+                //PARA SWAGGER CAMBIAMOS .authenticated() POR .permitAll()
+                .anyRequest().permitAll()
             );
 
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            //APAGADO TEMPORAL
+        //http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

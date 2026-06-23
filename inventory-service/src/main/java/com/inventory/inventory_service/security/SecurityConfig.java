@@ -21,25 +21,18 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-            http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                    // VER inventario (Cualquier usuario con token)
-                    .requestMatchers(HttpMethod.GET, "/api/inventory", "/api/inventory/**").authenticated()
-                    
-                    // CREAR, EDITAR, BORRAR (Solo ADMIN). Cubrimos la ruta exacta y sus sub-rutas
-                    .requestMatchers(HttpMethod.POST, "/api/inventory", "/api/inventory/**").hasAuthority("ROLE_ADMIN")
-                    .requestMatchers(HttpMethod.PUT, "/api/inventory", "/api/inventory/**").hasAuthority("ROLE_ADMIN")
-                    .requestMatchers(HttpMethod.DELETE, "/api/inventory", "/api/inventory/**").hasAuthority("ROLE_ADMIN")
-                    
-                    // Cualquier otra petición residual requiere token
-                    .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session
-                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+        http
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
+            // Swagger abierto
+            .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+            // Todo lo demás abierto para pruebas
+            .anyRequest().permitAll()
+        )
+        .sessionManagement(session -> session
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        );
 
-            return http.build();
+    return http.build();
         }
 }
