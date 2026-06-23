@@ -1,0 +1,37 @@
+services:
+  inventory-db:
+    image: mysql:8.0
+    container_name: inventory-db-container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: inventory_db
+    ports:
+      - "3312:3306"
+    networks:
+      - inventory-network
+    
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  inventory-app:
+    build: .
+    container_name: inventory-service-container
+    ports:
+      - "8084:8084"
+    depends_on:
+      inventory-db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://inventory-db:3306/inventory_db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      EUREKA_CLIENT_ENABLED: "false"
+    networks:
+      - inventory-network
+
+networks:
+  inventory-network:
+    driver: bridge
