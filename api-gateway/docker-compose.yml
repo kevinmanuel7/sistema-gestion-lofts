@@ -1,0 +1,13 @@
+services:
+  api-gateway:
+    build: .
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    networks:
+      - loft_network
+
+networks:
+  loft_network:
+    external: true

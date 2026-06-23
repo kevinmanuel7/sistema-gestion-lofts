@@ -16,7 +16,7 @@ services:
       timeout: 5s
       retries: 10
     networks:
-      - utility-network
+      - loft_network
 
   utility-service:
     build:
@@ -35,12 +35,11 @@ services:
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
     networks:
-      - utility-network
+      - loft_network
 
 volumes:
   utility_db_data:
 
-# Red privada exclusiva para este microservicio
 networks:
-  utility-network:
-    driver: bridge
+  loft_network:
+    external: true

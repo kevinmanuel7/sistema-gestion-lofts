@@ -14,7 +14,7 @@ services:
       EUREKA_CLIENT_ENABLED: "false"
     restart: on-failure
     networks:
-      - tenant-network
+      - loft_network
 
   tenant-db:
     image: mysql:8.0
@@ -32,11 +32,11 @@ services:
       timeout: 5s
       retries: 10
     networks:
-      - tenant-network
+      - loft_network
 
 networks:
-  tenant-network:
-    driver: bridge
+  loft_network:
+    external: true
 
 volumes:
   tenant_db_data:

@@ -1,9 +1,0 @@
-com/inventory/inventory_service/controller/InventoryController.class
-com/inventory/inventory_service/service/InventoryService.class
-com/inventory/inventory_service/security/JwtAuthenticationFilter.class
-com/inventory/inventory_service/security/SecurityConfig.class
-com/inventory/inventory_service/repository/InventoryRepository.class
-com/inventory/inventory_service/config/RestTemplateConfig.class
-com/inventory/inventory_service/InventoryServiceApplication.class
-com/inventory/inventory_service/security/JwtUtil.class
-com/inventory/inventory_service/model/Inventory.class

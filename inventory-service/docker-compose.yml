@@ -8,7 +8,7 @@ services:
     ports:
       - "3312:3306"
     networks:
-      - inventory-network
+      - loft_network
     
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
@@ -30,8 +30,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: root
       EUREKA_CLIENT_ENABLED: "false"
     networks:
-      - inventory-network
+      - loft_network
 
 networks:
-  inventory-network:
-    driver: bridge
+  loft_network:
+    external: true

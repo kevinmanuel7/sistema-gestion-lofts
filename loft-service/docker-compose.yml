@@ -1,6 +1,5 @@
 
 services:
-  # 1. EL CONTENEDOR DE LA BASE DE DATOS
   mysql-loft:
     image: mysql:8.0
     container_name: db_loft_container
@@ -10,16 +9,18 @@ services:
     ports:
       - "3308:3306" # 3308 para que no choque con Laragon (3306) ni con el auth-service (3307)
     volumes:
-      - loft_db_data:/var/lib/mysql # Guarda los datos para que no se borren si apagas Docker
+      - loft_db_data:/var/lib/mysql # Guarda los datos para que no se borren si se apaga Docker
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
       interval: 5s
       timeout: 5s
       retries: 10
+    networks:
+      - loft_network
 
   loft-service:
     build: . # Le dice a Docker que construya la imagen usando el Dockerfile de esta carpeta
-    container_name: loft_service_container
+    container_name: loft-service-container
     ports:
       - "8083:8083"
     depends_on:
@@ -27,10 +28,16 @@ services:
         condition: service_healthy # Obliga a esperar que MySQL encienda primero
     restart: on-failure
     environment:
-      # Variables de tu application.properties
+      # Variables de application.properties
       - spring.datasource.url=jdbc:mysql://mysql-loft:3306/db_loft?serverTimezone=UTC
       - spring.datasource.username=root
       - spring.datasource.password=root
+    networks:
+      - loft_network
 
 volumes:
   loft_db_data:
+
+networks:
+  loft_network:
+    external: true
