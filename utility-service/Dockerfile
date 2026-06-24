@@ -1,5 +1,5 @@
 # 1. Imagen base oficial de Java 17 (ligera y rápida)
-FROM eclipse-temurin:17-jdk-alpine
+FROM eclipse-temurin:17-jdk-jammy
 
 # 2. Carpeta de trabajo dentro del contenedor
 WORKDIR /app
