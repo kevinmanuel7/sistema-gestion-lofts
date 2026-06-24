@@ -118,7 +118,7 @@ public class LeaseService {
         try {
             LoftDTO loft = WebClient.create()
                 .get()
-                .uri("http://localhost:8080/api/loft/" + loftId)
+                .uri("http://api-gateway:8080/api/loft/" + loftId)
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .retrieve()
                 .bodyToMono(LoftDTO.class)
@@ -143,7 +143,7 @@ public class LeaseService {
         try {
             WebClient.create()
                 .get()
-                .uri("http://localhost:8080/api/tenants/" + tenantId)
+                .uri("http://api-gateway:8080/api/tenants/" + tenantId)
                 .header(HttpHeaders.AUTHORIZATION, token)
                 .retrieve()
                 .toBodilessEntity()
